@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import datetime
 
 load_dotenv()
 
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -136,4 +138,25 @@ DATABASES = {
         'HOST': os.environ.get('POSTGRES_HOSTNAME'),
         'PORT': 5432,
     }
+}
+
+# Allow all origins to make requests (not recommended for production)
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+# JWT Authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': 'your_signing_key',
+    'VERIFYING_KEY': None,
+    'ROTATE': False,
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=120),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
 }
