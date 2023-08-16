@@ -1,8 +1,9 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .serializers import UserLoginSerializer, UserRegistrationSerializer
+from .serializers import UserLoginSerializer, UserRegistrationSerializer, ProductSerializer
+from .models import Product
 
 
 @api_view(['POST'])
@@ -21,3 +22,12 @@ def user_registration(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductListCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
