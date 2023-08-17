@@ -126,7 +126,7 @@ class Fetch {
 
 const api = new Fetch({
   baseURL: env.NEXT_PUBLIC_API_URL,
-  timeout: 1000,
+  timeout: 60000,
   headers: { "Content-Type": "application/json" },
 });
 

@@ -105,11 +105,6 @@ const ProductsTable = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full"
         />
-        <div className="absolute right-4">
-          {isSearchFetching && (
-            <ArrowPathIcon className="mx-auto flex h-6 w-6 animate-spin" />
-          )}
-        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -132,7 +127,16 @@ const ProductsTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isSearchFetching ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <ArrowPathIcon className="mx-auto flex h-10 w-10 animate-spin" />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
