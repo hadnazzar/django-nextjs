@@ -12,9 +12,25 @@ class Fetch {
   headers: Record<string, string>;
 
   constructor(options: FetchOptions) {
-    this.baseURL = options.baseURL ?? "";
+    this.baseURL = this.getBaseURL() ?? options.baseURL ?? "";
     this.timeout = options.timeout ?? 5000;
     this.headers = options.headers ?? {};
+
+    if (this.baseURL === "") {
+      throw new Error("No API URL found");
+    }
+  }
+
+  getBaseURL(): string {
+    // Check if it's a client-side or server-side request
+    const isClientSide = typeof window !== "undefined" || process.browser;
+
+    // Adjust the baseURL based on where the request originates
+    if (isClientSide) {
+      return env.NEXT_PUBLIC_API_URL;
+    } else {
+      return env.API_URL_INTERNAL ?? env.NEXT_PUBLIC_API_URL;
+    }
   }
 
   async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -74,6 +90,8 @@ class Fetch {
     method: string,
     options?: RequestInit
   ): Promise<Response> {
+    this.baseURL = this.getBaseURL();
+
     const url = `${this.baseURL}${endpoint}`;
 
     const config: RequestInit = {

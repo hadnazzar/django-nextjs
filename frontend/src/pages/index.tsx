@@ -25,7 +25,7 @@ const Home = () => {
               <ProductsTable />
             </>
           ) : (
-            <h1 className="text-xl font-semibold text-slate-600 lg:text-2xl self-center">
+            <h1 className="self-center text-xl font-semibold text-slate-600 lg:text-2xl">
               Please Sign In to view products
             </h1>
           )}

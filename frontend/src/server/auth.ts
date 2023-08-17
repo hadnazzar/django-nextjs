@@ -54,18 +54,23 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
-        const { username, password } = credentials;
+        try {
+          const { username, password } = credentials;
 
-        const userData = await api.post<User>("/login-or-register", {
-          username,
-          password,
-        });
+          const userData = await api.post<User>("/login-or-register", {
+            username,
+            password,
+          });
 
-        const { token } = userData;
-        return {
-          ...userData,
-          token: token,
-        };
+          const { token } = userData;
+          return {
+            ...userData,
+            token: token,
+          };
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
       },
     }),
   ],

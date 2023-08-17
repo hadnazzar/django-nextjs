@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  backend:
+    build:
+      context: ./backend
+    working_dir: /usr/src/app/backend
+    volumes:
+      - ./backend:/usr/src/app/backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py seed_users && 
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOSTNAME=db
+    depends_on:
+      - db
+  frontend:
+    build:
+      context: ./frontend
+    working_dir: /usr/src/app/frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+    environment:
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL_INTERNAL=http://127.0.0.1:3000
+      - NEXTAUTH_SECRET=NgRVTyLA9OqbRYGgnc4cjyW+GVJa7/6zO4QPUFvODwk=
+      - NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+      - API_URL_INTERNAL=http://backend:8000
